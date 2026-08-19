@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Phone Shop — Project Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+/* ─── RESET ─── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+/* ─── TOKENS ─── */
+:root{
+  --ink:    #07090f;
+  --paper:  #f0eee9;
+  --steel:  #1a1d2e;
+  --neon:   #00e5a0;       /* signature: terminal-green, like phone signal */
+  --warm:   #ff6b35;       /* orange accent for warnings / highlights */
+  --silver: #8b9ab0;
+  --rule:   rgba(0,0,0,.12);
+  --mono:   'Space Mono', monospace;
+  --sans:   'Space Grotesk', sans-serif;
+}
+
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  font-size:15px;
+  line-height:1.6;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--paper)}
+::-webkit-scrollbar-thumb{background:var(--silver);border-radius:3px}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   HERO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.hero{
+  background:var(--steel);
+  color:var(--paper);
+  min-height:100vh;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  padding:0;
+  position:relative;
+  overflow:hidden;
+}
+
+/* grid background */
+.hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(0,229,160,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,160,.06) 1px, transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+}
+
+/* animated neon circle */
+.hero-glow{
+  position:absolute;
+  width:600px;height:600px;
+  border-radius:50%;
+  background:radial-gradient(ellipse, rgba(0,229,160,.12) 0%, transparent 70%);
+  top:-100px;right:-100px;
+  animation:pulse 6s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.7}}
+
+/* top bar */
+.hero-bar{
+  position:relative;z-index:2;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:22px 48px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.hero-bar-left{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--neon);
+  letter-spacing:.1em;
+}
+.hero-bar-right{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--silver);
+  letter-spacing:.06em;
+}
+
+/* center content */
+.hero-center{
+  position:relative;z-index:2;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:60px 48px;
+}
+
+.hero-eyebrow{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--neon);
+  margin-bottom:28px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.hero-eyebrow::before{
+  content:'';
+  display:inline-block;
+  width:32px;height:1px;
+  background:var(--neon);
+}
+
+.hero-title{
+  font-size:clamp(46px,7vw,96px);
+  font-weight:700;
+  line-height:.95;
+  letter-spacing:-.03em;
+  color:#fff;
+  margin-bottom:32px;
+  max-width:820px;
+}
+.hero-title em{
+  font-style:normal;
+  color:var(--neon);
+}
+
+.hero-desc{
+  font-size:17px;
+  color:var(--silver);
+  max-width:520px;
+  line-height:1.7;
+  margin-bottom:48px;
+}
+
+/* tech tags */
+.tech-row{display:flex;flex-wrap:wrap;gap:8px}
+.tech-tag{
+  font-family:var(--mono);
+  font-size:11px;
+  padding:6px 14px;
+  border-radius:4px;
+  font-weight:700;
+  letter-spacing:.05em;
+}
+.tech-tag.primary{background:var(--neon);color:var(--ink)}
+.tech-tag.outline{border:1px solid rgba(255,255,255,.2);color:var(--silver)}
+
+/* bottom stats */
+.hero-stats{
+  position:relative;z-index:2;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.stat-cell{
+  padding:28px 40px;
+  border-right:1px solid rgba(255,255,255,.08);
+}
+.stat-cell:last-child{border-right:none}
+.stat-num{
+  font-family:var(--mono);
+  font-size:36px;
+  font-weight:700;
+  color:#fff;
+  line-height:1;
+  margin-bottom:6px;
+}
+.stat-num span{color:var(--neon);font-size:22px}
+.stat-label{font-size:11px;color:var(--silver);letter-spacing:.06em;text-transform:uppercase}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   LAYOUT WRAPPER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.wrap{max-width:1100px;margin:0 auto;padding:0 40px}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SECTION SHARED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+section{padding:80px 0;border-bottom:1px solid var(--rule)}
+section:last-child{border-bottom:none}
+
+.sec-label{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--warm);
+  margin-bottom:10px;
+}
+.sec-title{
+  font-size:clamp(28px,4vw,44px);
+  font-weight:700;
+  letter-spacing:-.02em;
+  color:var(--ink);
+  margin-bottom:16px;
+}
+.sec-desc{
+  font-size:15px;
+  color:var(--silver);
+  max-width:600px;
+  margin-bottom:48px;
+  line-height:1.75;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ARCHITECTURE SECTION — dark panel
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#architecture{
+  background:var(--steel);
+  color:var(--paper);
+  border-bottom:none;
+  padding:80px 0;
+}
+#architecture .sec-title{color:#fff}
+#architecture .sec-desc{color:var(--silver)}
+
+.db-layout{
+  display:grid;
+  grid-template-columns:1fr 60px 1fr 60px 1fr;
+  gap:0;
+  align-items:center;
+  margin-top:8px;
+}
+
+.db-table{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;
+  overflow:hidden;
+}
+.db-table-head{
+  background:rgba(0,229,160,.12);
+  border-bottom:1px solid rgba(0,229,160,.2);
+  padding:12px 18px;
+  font-family:var(--mono);
+  font-size:12px;
+  font-weight:700;
+  color:var(--neon);
+  display:flex;align-items:center;gap:8px;
+}
+.db-field{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:9px 18px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  font-family:var(--mono);
+  font-size:11.5px;
+}
+.db-field:last-child{border-bottom:none}
+.db-field-name{color:#e2e8f0}
+.db-field-meta{
+  font-size:10px;
+  padding:2px 8px;
+  border-radius:4px;
+  font-weight:700;
+}
+.meta-pk{background:rgba(245,158,11,.2);color:#fcd34d}
+.meta-fk{background:rgba(167,139,250,.2);color:#c4b5fd}
+.meta-t {background:rgba(100,116,139,.2);color:#94a3b8}
+
+.db-arrow{
+  text-align:center;
+  font-family:var(--mono);
+  font-size:18px;
+  color:rgba(0,229,160,.5);
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+}
+.db-arrow-line{width:1px;height:30px;background:rgba(0,229,160,.25)}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   MODULES SECTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.modules-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:2px;
+  background:var(--rule);
+  border:1px solid var(--rule);
+  border-radius:12px;
+  overflow:hidden;
+}
+.module-card{
+  background:var(--paper);
+  padding:36px 32px;
+  position:relative;
+  overflow:hidden;
+}
+.module-card::after{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:3px;
+}
+.module-card.m1::after{background:var(--neon)}
+.module-card.m2::after{background:#60a5fa}
+.module-card.m3::after{background:var(--warm)}
+.module-card.m4::after{background:#a78bfa}
+
+.module-icon{font-size:32px;margin-bottom:14px}
+.module-name{
+  font-size:18px;font-weight:700;
+  letter-spacing:-.01em;
+  margin-bottom:12px;color:var(--ink);
+}
+.module-list{list-style:none}
+.module-list li{
+  font-size:13px;
+  color:var(--silver);
+  padding:4px 0;
+  padding-left:16px;
+  position:relative;
+  border-bottom:1px solid var(--rule);
+}
+.module-list li:last-child{border-bottom:none}
+.module-list li::before{
+  content:'';
+  position:absolute;left:0;top:50%;
+  transform:translateY(-50%);
+  width:5px;height:5px;
+  border-radius:50%;
+  background:var(--silver);
+  opacity:.5;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   FEATURES  — alternating cards
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+.feat-card{
+  border:1px solid var(--rule);
+  border-radius:10px;
+  padding:28px 24px;
+  position:relative;
+  transition:box-shadow .2s,transform .2s;
+}
+.feat-card:hover{
+  box-shadow:0 12px 40px rgba(0,0,0,.09);
+  transform:translateY(-3px);
+}
+.feat-num{
+  font-family:var(--mono);
+  font-size:10px;
+  color:var(--silver);
+  letter-spacing:.1em;
+  margin-bottom:16px;
+}
+.feat-icon{font-size:24px;margin-bottom:10px}
+.feat-title{font-size:15px;font-weight:700;margin-bottom:8px;color:var(--ink)}
+.feat-body{font-size:13px;color:var(--silver);line-height:1.65}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   CODE SECTION — full dark
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#code-section{
+  background:#07090f;
+  color:var(--paper);
+  padding:80px 0;
+  border-bottom:none;
+}
+#code-section .sec-title{color:#fff}
+#code-section .sec-desc{color:var(--silver)}
+
+.code-wrap{
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;
+  overflow:hidden;
+}
+.code-topbar{
+  background:#0d1117;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  padding:12px 20px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.dot{width:11px;height:11px;border-radius:50%}
+.dot-r{background:#ff5f57}
+.dot-y{background:#febc2e}
+.dot-g{background:#28c840}
+.code-filename{
+  margin-left:8px;
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--silver);
+}
+pre.code{
+  background:#0d1117;
+  padding:28px 28px;
+  font-family:var(--mono);
+  font-size:13px;
+  line-height:1.8;
+  overflow-x:auto;
+  color:#c9d1d9;
+}
+.kw{color:#ff7b72}
+.fn{color:#d2a8ff}
+.st{color:#a5d6ff}
+.cm{color:#6e7681;font-style:italic}
+.nb{color:#79c0ff}
+.op{color:#ff7b72}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   TEAM SECTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#team{background:#f7f5f0}
+
+.prof-block{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  background:#fff;
+  border:1px solid var(--rule);
+  border-left:4px solid var(--neon);
+  border-radius:10px;
+  padding:24px 28px;
+  margin-bottom:36px;
+  max-width:480px;
+}
+.prof-ava{
+  width:52px;height:52px;
+  border-radius:10px;
+  background:var(--steel);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;flex-shrink:0;
+}
+.prof-name{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.prof-sub{font-size:12px;color:var(--silver)}
+
+.students-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+.student-card{
+  background:#fff;
+  border:1px solid var(--rule);
+  border-radius:10px;
+  padding:28px 22px;
+  text-align:center;
+  transition:box-shadow .2s;
+}
+.student-card:hover{box-shadow:0 8px 28px rgba(0,0,0,.08)}
+
+.stu-avatar{
+  width:64px;height:64px;
+  border-radius:50%;
+  margin:0 auto 16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;
+}
+.stu-avatar.a1{background:linear-gradient(135deg,#1d4ed8,#0ea5e9)}
+.stu-avatar.a2{background:linear-gradient(135deg,#7c3aed,#ec4899)}
+.stu-avatar.a3{background:linear-gradient(135deg,#059669,#0d9488)}
+
+.stu-name{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px;line-height:1.3}
+.stu-role{font-size:11.5px;color:var(--silver)}
+.stu-badge{
+  display:inline-block;
+  margin-top:12px;
+  font-family:var(--mono);
+  font-size:10px;
+  padding:4px 10px;
+  border-radius:4px;
+  background:rgba(0,229,160,.12);
+  color:#059669;
+  font-weight:700;
+  letter-spacing:.05em;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   FOOTER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+footer{
+  background:var(--steel);
+  padding:32px 40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.footer-left{
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--silver);
+}
+.footer-left strong{color:var(--neon)}
+.footer-right{
+  font-size:12px;
+  color:rgba(255,255,255,.25);
+  font-family:var(--mono);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RESPONSIVE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media(max-width:780px){
+  .hero-stats{grid-template-columns:repeat(2,1fr)}
+  .db-layout{grid-template-columns:1fr;gap:16px}
+  .db-arrow{display:none}
+  .modules-grid{grid-template-columns:1fr}
+  .features-grid{grid-template-columns:1fr}
+  .students-grid{grid-template-columns:1fr}
+  .hero-bar{padding:18px 24px}
+  .hero-center{padding:48px 24px}
+  .stat-cell{padding:20px 24px}
+  .wrap{padding:0 20px}
+  section{padding:56px 0}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HERO ══════════════ -->
+<div class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="hero-bar">
+    <div class="hero-bar-left">ENSSA / NHSAST &nbsp;·&nbsp; PROGRAMMING MODULE</div>
+    <div class="hero-bar-right">S2 — 2025 / 2026</div>
+  </div>
+
+  <div class="hero-center wrap">
+    <div class="hero-eyebrow">Project Report</div>
+    <h1 class="hero-title">Phone Shop<br/><em>Management</em><br/>System</h1>
+    <p class="hero-desc">
+      A desktop application for managing a phone retail store — stock, customers, and orders —
+      built in Python with a SQLite3 relational database and a CustomTkinter GUI.
+    </p>
+    <div class="tech-row">
+      <span class="tech-tag primary">Python 3</span>
+      <span class="tech-tag primary">SQLite3</span>
+      <span class="tech-tag outline">CustomTkinter</span>
+      <span class="tech-tag outline">CRUD</span>
+      <span class="tech-tag outline">Relational DB</span>
+      <span class="tech-tag outline">Event-Driven GUI</span>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-cell">
+      <div class="stat-num">3<span>tbls</span></div>
+      <div class="stat-label">Database Tables</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">4<span>tabs</span></div>
+      <div class="stat-label">GUI Modules</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">20<span>+</span></div>
+      <div class="stat-label">CRUD Operations</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">800<span>loc</span></div>
+      <div class="stat-label">Lines of Code</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ARCHITECTURE ══════════════ -->
+<section id="architecture">
+  <div class="wrap">
+    <div class="sec-label">Database Design</div>
+    <h2 class="sec-title">Relational Schema</h2>
+    <p class="sec-desc">
+      Three normalized tables linked by foreign keys. Deleting a phone or customer cascades
+      to remove related orders automatically, preserving integrity at all times.
+    </p>
+
+    <div class="db-layout">
+
+      <div class="db-table">
+        <div class="db-table-head">📱 Phones</div>
+        <div class="db-field"><span class="db-field-name">phone_id</span><span class="db-field-meta meta-pk">PK · AUTO</span></div>
+        <div class="db-field"><span class="db-field-name">brand</span><span class="db-field-meta meta-t">TEXT</span></div>
+        <div class="db-field"><span class="db-field-name">model</span><span class="db-field-meta meta-t">TEXT</span></div>
+        <div class="db-field"><span class="db-field-name">price</span><span class="db-field-meta meta-t">REAL</span></div>
+        <div class="db-field"><span class="db-field-name">stock</span><span class="db-field-meta meta-t">INTEGER</span></div>
+      </div>
+
+      <div class="db-arrow">
+        <div class="db-arrow-line"></div>
+        ←
+        <div class="db-arrow-line"></div>
+      </div>
+
+      <div class="db-table">
+        <div class="db-table-head">🧾 Orders</div>
+        <div class="db-field"><span class="db-field-name">order_id</span><span class="db-field-meta meta-pk">PK · AUTO</span></div>
+        <div class="db-field"><span class="db-field-name">customer_id</span><span class="db-field-meta meta-fk">FK → Customers</span></div>
+        <div class="db-field"><span class="db-field-name">phone_id</span><span class="db-field-meta meta-fk">FK → Phones</span></div>
+        <div class="db-field"><span class="db-field-name">quantity</span><span class="db-field-meta meta-t">INTEGER</span></div>
+        <div class="db-field"><span class="db-field-name">order_date</span><span class="db-field-meta meta-t">TEXT</span></div>
+      </div>
+
+      <div class="db-arrow">
+        <div class="db-arrow-line"></div>
+        →
+        <div class="db-arrow-line"></div>
+      </div>
+
+      <div class="db-table">
+        <div class="db-table-head">👤 Customers</div>
+        <div class="db-field"><span class="db-field-name">customer_id</span><span class="db-field-meta meta-pk">PK · AUTO</span></div>
+        <div class="db-field"><span class="db-field-name">name</span><span class="db-field-meta meta-t">TEXT</span></div>
+        <div class="db-field"><span class="db-field-name">phone</span><span class="db-field-meta meta-t">TEXT</span></div>
+        <div class="db-field"><span class="db-field-name">city</span><span class="db-field-meta meta-t">TEXT</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ MODULES ══════════════ -->
+<section id="modules">
+  <div class="wrap">
+    <div class="sec-label">Application Tabs</div>
+    <h2 class="sec-title">Four Modules, One Window</h2>
+    <p class="sec-desc">
+      The GUI uses a tabview layout. Each tab is an independent management panel with
+      its own forms, search bar, and live display area.
+    </p>
+
+    <div class="modules-grid">
+      <div class="module-card m1">
+        <div class="module-icon">📊</div>
+        <div class="module-name">Dashboard</div>
+        <ul class="module-list">
+          <li>Total customers, phones, orders</li>
+          <li>Total revenue in Algerian Dinar</li>
+          <li>Live low-stock alert (≤ 2 units)</li>
+          <li>One-click refresh</li>
+        </ul>
+      </div>
+      <div class="module-card m2">
+        <div class="module-icon">📱</div>
+        <div class="module-name">Phones</div>
+        <ul class="module-list">
+          <li>Add phone with brand, model, price, stock</li>
+          <li>Edit any field by phone ID</li>
+          <li>Update stock independently</li>
+          <li>Delete with cascade to orders</li>
+          <li>Search by brand or model (LIKE)</li>
+        </ul>
+      </div>
+      <div class="module-card m3">
+        <div class="module-icon">👤</div>
+        <div class="module-name">Customers</div>
+        <ul class="module-list">
+          <li>Add customer (name, phone, city)</li>
+          <li>Edit any field by customer ID</li>
+          <li>Delete with cascade to orders</li>
+          <li>Search by name, phone, or city</li>
+        </ul>
+      </div>
+      <div class="module-card m4">
+        <div class="module-icon">🧾</div>
+        <div class="module-name">Orders</div>
+        <ul class="module-list">
+          <li>Place order — stock auto-decrements</li>
+          <li>Edit quantity — stock difference adjusted</li>
+          <li>Delete order — stock fully restored</li>
+          <li>Order ID resequenced after deletion</li>
+          <li>Search by ID, name, model, or date</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ FEATURES ══════════════ -->
+<section id="features">
+  <div class="wrap">
+    <div class="sec-label">Technical Highlights</div>
+    <h2 class="sec-title">What Makes It Work</h2>
+    <p class="sec-desc">Core engineering decisions behind the application's reliability and usability.</p>
+
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-num">F-01</div>
+        <div class="feat-icon">🔒</div>
+        <div class="feat-title">Input Validation</div>
+        <p class="feat-body">Every field is checked before a database write. Price must be a positive float, stock a positive integer, names non-empty. Errors shown via messagebox dialogs.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">F-02</div>
+        <div class="feat-icon">🔗</div>
+        <div class="feat-title">Cascade Deletion</div>
+        <p class="feat-body">Deleting a phone or customer triggers deletion of all linked orders first, keeping the database consistent with no orphan records.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">F-03</div>
+        <div class="feat-icon">📦</div>
+        <div class="feat-title">Real-Time Stock</div>
+        <p class="feat-body">Placing an order reduces stock by quantity. Cancelling restores it. Stock ≤ 2 triggers a ⚠️ LOW warning both in the phone list and the dashboard.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">F-04</div>
+        <div class="feat-icon">🔍</div>
+        <div class="feat-title">Multi-Field Search</div>
+        <p class="feat-body">SQL LIKE queries with wildcards across all relevant columns. Orders can be searched by order ID, customer name, phone brand, model, or date simultaneously.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">F-05</div>
+        <div class="feat-icon">🔄</div>
+        <div class="feat-title">ID Resequencing</div>
+        <p class="feat-body">After deleting an order, the resequence_orders() function reassigns all IDs from 1 upwards and resets the AUTOINCREMENT counter — no gaps remain.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">F-06</div>
+        <div class="feat-icon">💾</div>
+        <div class="feat-title">Persistent Storage</div>
+        <p class="feat-body">The database file is saved next to the script using os.path, so data survives application restarts without any configuration needed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ CODE ══════════════ -->
+<section id="code-section">
+  <div class="wrap">
+    <div class="sec-label">Code Sample</div>
+    <h2 class="sec-title">Place Order — Core Logic</h2>
+    <p class="sec-desc">
+      Demonstrates validation, foreign-key lookups, stock-availability checks,
+      and atomic commit — all in one function.
+    </p>
+
+    <div class="code-wrap">
+      <div class="code-topbar">
+        <span class="dot dot-r"></span>
+        <span class="dot dot-y"></span>
+        <span class="dot dot-g"></span>
+        <span class="code-filename">phone_shop.py &nbsp;— place_order()</span>
+      </div>
+<pre class="code"><span class="kw">def</span> <span class="fn">place_order</span>():
+    customer_id = order_cust_id_entry.<span class="fn">get</span>().<span class="fn">strip</span>()
+    phone_id    = order_phone_id_entry.<span class="fn">get</span>().<span class="fn">strip</span>()
+    quantity    = order_qty_entry.<span class="fn">get</span>().<span class="fn">strip</span>()
+
+    <span class="cm"># ── 1. Check all fields are filled ──</span>
+    <span class="kw">if not</span> customer_id <span class="kw">or not</span> phone_id <span class="kw">or not</span> quantity:
+        messagebox.<span class="fn">showerror</span>(<span class="st">"Error"</span>, <span class="st">"Fill all order fields"</span>)
+        <span class="kw">return</span>
+
+    <span class="cm"># ── 2. Validate quantity ──</span>
+    <span class="kw">if not</span> <span class="fn">is_positive_int</span>(quantity) <span class="kw">or</span> <span class="fn">int</span>(quantity) <span class="op">==</span> <span class="nb">0</span>:
+        messagebox.<span class="fn">showerror</span>(<span class="st">"Error"</span>, <span class="st">"Quantity must be a positive integer"</span>)
+        <span class="kw">return</span>
+
+    <span class="cm"># ── 3. Verify customer exists ──</span>
+    cursor.<span class="fn">execute</span>(<span class="st">"SELECT name FROM Customers WHERE customer_id=?"</span>, (customer_id,))
+    <span class="kw">if not</span> cursor.<span class="fn">fetchone</span>():
+        messagebox.<span class="fn">showerror</span>(<span class="st">"Error"</span>, <span class="st">"Customer ID not found"</span>); <span class="kw">return</span>
+
+    <span class="cm"># ── 4. Check phone stock ──</span>
+    cursor.<span class="fn">execute</span>(<span class="st">"SELECT stock, brand, model FROM Phones WHERE phone_id=?"</span>, (phone_id,))
+    current_stock, brand, model = cursor.<span class="fn">fetchone</span>()
+    qty = <span class="fn">int</span>(quantity)
+
+    <span class="kw">if</span> qty <span class="op">&gt;</span> current_stock:
+        messagebox.<span class="fn">showerror</span>(<span class="st">"Error"</span>, <span class="st">f"Not enough stock. Available: {current_stock}"</span>)
+        <span class="kw">return</span>
+
+    <span class="cm"># ── 5. Insert order & decrement stock atomically ──</span>
+    today = date.<span class="fn">today</span>().<span class="fn">isoformat</span>()
+    cursor.<span class="fn">execute</span>(<span class="st">"INSERT INTO Orders(customer_id,phone_id,quantity,order_date) VALUES(?,?,?,?)"</span>,
+               (customer_id, phone_id, qty, today))
+    cursor.<span class="fn">execute</span>(<span class="st">"UPDATE Phones SET stock = stock - ? WHERE phone_id=?"</span>, (qty, phone_id))
+    conn.<span class="fn">commit</span>()
+
+    messagebox.<span class="fn">showinfo</span>(<span class="st">"Success"</span>, <span class="st">f"Order placed: {brand} {model} ×{qty}"</span>)
+    <span class="fn">refresh_dashboard</span>()</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ TEAM ══════════════ -->
+<section id="team">
+  <div class="wrap">
+    <div class="sec-label">Project Team</div>
+    <h2 class="sec-title">Who Built This</h2>
+
+    <div class="prof-block">
+      <div class="prof-ava">🎓</div>
+      <div>
+        <div class="prof-name">Dr. Mahseur Mohammed</div>
+        <div class="prof-sub">Module Supervisor &nbsp;·&nbsp; ENSSA / NHSAST</div>
+      </div>
+    </div>
+
+    <div class="students-grid">
+      <div class="student-card">
+        <div class="stu-avatar a1">👨‍💻</div>
+        <div class="stu-name">Abdeljebar<br/>Kamel Eddine</div>
+        <div class="stu-role">3rd Year Engineering</div>
+        <div class="stu-badge">RASD / Automatic</div>
+      </div>
+      <div class="student-card">
+        <div class="stu-avatar a2">👩‍💻</div>
+        <div class="stu-name">Hella<br/>Dou El Kifl</div>
+        <div class="stu-role">3rd Year Engineering</div>
+        <div class="stu-badge">RASD / Automatic</div>
+      </div>
+      <div class="student-card">
+        <div class="stu-avatar a3">👨‍💻</div>
+        <div class="stu-name">Khetib<br/>Ibrahim</div>
+        <div class="stu-role">3rd Year Engineering</div>
+        <div class="stu-badge">RASD / Automatic</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer>
+  <div class="footer-left">
+    <strong>ENSSA / NHSAST</strong> &nbsp;·&nbsp; Programming Module &nbsp;·&nbsp; Academic Year 2025 / 2026
+  </div>
+  <div class="footer-right">Phone Shop Management System</div>
+</footer>
+
+</body>
+</html>
