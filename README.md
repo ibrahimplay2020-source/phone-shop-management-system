@@ -22,5 +22,7 @@ A desktop application for managing a phone retail store, including phones, custo
 - Customers Module
 - Orders Module
 
-## Author
-Ibrahim Khetib
+## Authors
+- Ibrahim Khetib
+- Abdeljebar Kamel Eddine
+- Hella Dou El Kifle
